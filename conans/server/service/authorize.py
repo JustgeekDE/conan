@@ -11,6 +11,7 @@ Replace this module with other that keeps the interface or super class.
 
 
 from abc import ABCMeta, abstractmethod
+from passlib.apache import HtpasswdFile
 from conans.errors import ForbiddenException, InternalErrorException
 from conans.model.ref import ConanFileReference
 
@@ -196,3 +197,20 @@ class BasicAuthorizer(Authorizer):
                    (version != "*" and version != conan_reference.version) or
                    (user != "*" and user != conan_reference.user) or
                    (channel != "*" and channel != conan_reference.channel))
+
+
+#  ##################################################
+#  ############ Htpasswd Authenticator ##############
+#  ##################################################
+
+class HtpasswdAuthenticator(Authenticator):
+    """
+    Handles the user authentication from a htpasswd file.
+    users is {"file": path-to-password-file}
+    """
+
+    def __init__(self, passFilename):
+        self.passFile = HtpasswdFile(passFilename)
+
+    def valid_user(self, username, plain_password):
+        return self.passFile.check_password(username, plain_password)

@@ -22,6 +22,8 @@ disk_storage_path: ~/.conan_server/data
 disk_authorize_timeout: 1800
 updown_secret: {updown_secret}
 
+authenticator: basic
+htpasswd_file: htpasswd
 
 [write_permissions]
 

@@ -41,6 +41,8 @@ class ConanServerConfigParser(ConfigParser):
                            "port": get_env("CONAN_SERVER_PORT", None, environment),
                            "public_port": get_env("CONAN_SERVER_PUBLIC_PORT", None, environment),
                            "host_name": get_env("CONAN_HOST_NAME", None, environment),
+                           "authenticator": get_env("CONAN_AUTHENTICATOR", None, environment),
+                           "htpasswd_file": get_env("HTPASSWD_FILE", None, environment),
                            # "user:pass,user2:pass2"
                            "users": get_env("CONAN_SERVER_USERS", None, environment)}
 
@@ -193,6 +195,24 @@ class ConanServerConfigParser(ConfigParser):
         else:
             tmp = float(self._get_file_conf("server", "jwt_expire_minutes"))
             return timedelta(minutes=tmp)
+
+    @property
+    def authenticator(self):
+        authenticator = 'basic'
+        if self.env_config["authenticator"]:
+            authenticator = self.env_config["authenticator"].lower()
+        else:
+            authenticator = self._get_file_conf("server", "authenticator").lower()
+        if authenticator != 'htpasswd':
+            authenticator = 'basic'
+        return authenticator
+
+    @property
+    def htpasswd_file(self):
+        if self.env_config["htpasswd_file"]:
+            return self.env_config["htpasswd_file"]
+        else:
+            return self._get_file_conf('server', "htpasswd_file")
 
 
 def get_file_manager(config, public_url=None, updown_auth_manager=None):
