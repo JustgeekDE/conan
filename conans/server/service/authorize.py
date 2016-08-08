@@ -206,7 +206,8 @@ class BasicAuthorizer(Authorizer):
 class HtpasswdAuthenticator(Authenticator):
     """
     Handles the user authentication from a htpasswd file.
-    users is {"file": path-to-password-file}
+    Location of htpasswd file is specified in server conig
+    htpasswd_file: location-to-file
     """
 
     def __init__(self, passFilename):
